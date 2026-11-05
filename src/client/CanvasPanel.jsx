@@ -278,11 +278,15 @@ export function CanvasPanel({ sessionId, inputActions }) {
               'aria-expanded': Boolean(panel),
               onClick: togglePanel,
             },
-            React.createElement(Icon, {
-              name: 'chevronRight',
-              size: 12,
-              style: panel ? { transform: 'rotate(180deg)' } : undefined,
-            }),
+            React.createElement(
+              'span',
+              { className: 'dshc-drawer-glyph' },
+              React.createElement(Icon, {
+                name: 'chevronRight',
+                size: 12,
+                style: panel ? { transform: 'rotate(180deg)' } : undefined,
+              }),
+            ),
           ),
         ),
       ),
@@ -307,11 +311,15 @@ export function CanvasPanel({ sessionId, inputActions }) {
               'aria-expanded': Boolean(state.inspectorOpen),
               onClick: toggleInspector,
             },
-            React.createElement(Icon, {
-              name: 'chevronRight',
-              size: 12,
-              style: state.inspectorOpen ? undefined : { transform: 'rotate(180deg)' },
-            }),
+            React.createElement(
+              'span',
+              { className: 'dshc-drawer-glyph' },
+              React.createElement(Icon, {
+                name: 'chevronRight',
+                size: 12,
+                style: state.inspectorOpen ? undefined : { transform: 'rotate(180deg)' },
+              }),
+            ),
           ),
           React.createElement(Inspector, { store, onNameDialog: onNeedName }),
         ),

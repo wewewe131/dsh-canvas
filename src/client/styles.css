@@ -474,7 +474,9 @@
   --dshc-rail-w: 44px;
   --dshc-panel-w: 216px;
   --dshc-inspector-w: 236px;
-  --dshc-pull-w: 18px;
+  --dshc-tab-w: 6px;
+  --dshc-tab-h: 26px;
+  --dshc-tab-open: 30px;
   --dshc-drawer-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
@@ -553,6 +555,7 @@
 
 /* One drawer: the panel and its pull translate together. */
 .dshc-drawer-pane {
+  position: relative;
   display: flex;
   align-items: stretch;
   height: 100%;
@@ -582,51 +585,73 @@
   transition: visibility 0s linear 180ms;
 }
 
-/* The pull rides on the inner edge of the drawer. */
-/* A bookmark ribbon: theme brand fill, white glyph and a V notch at the bottom,
-   so the shape reads as a tab pinned to the panel edge. The root qualifier keeps
-   the theme foreground ahead of the generic `button { color: inherit }` reset. */
+/* The pull is a flush tab at the top corner of the drawer's inner edge. It is
+   absolutely positioned, so the drawer geometry never depends on it: a small
+   strip hangs over the canvas, and hovering grows it into a full rounded cube
+   with the glyph, border and shadow. The glyph only shows in the cube. */
 .dshc-root .dshc-drawer-handle {
-  flex: none;
-  align-self: flex-start;
+  position: absolute;
+  top: 6px;
+  z-index: 6;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
-  width: var(--dshc-pull-w);
-  height: 54px;
-  margin-top: 6px;
-  padding: 7px 0 0;
-  border: none;
+  width: var(--dshc-tab-w);
+  height: var(--dshc-tab-h);
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 3px;
   background: var(--dsw-alias-button-primary-fill, var(--dshc-accent));
   color: var(--dsw-alias-label-primary-foreground, #fff);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.18);
+  overflow: hidden;
   cursor: pointer;
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%);
   transition:
-    background 120ms ease,
-    filter 120ms ease;
+    width 170ms var(--dshc-drawer-ease),
+    height 170ms var(--dshc-drawer-ease),
+    border-radius 170ms var(--dshc-drawer-ease),
+    border-color 170ms var(--dshc-drawer-ease),
+    box-shadow 170ms var(--dshc-drawer-ease),
+    background 120ms ease;
 }
 
-/* Negative margins keep the pull out of the drawer's layout: it hangs over the
-   canvas instead of narrowing it, and stays visible when the drawer is closed. */
 .dshc-drawer-handle.is-left {
-  margin-right: calc(-1 * var(--dshc-pull-w));
+  left: 100%;
 }
 
 .dshc-drawer-handle.is-right {
-  margin-left: calc(-1 * var(--dshc-pull-w));
+  right: 100%;
 }
 
-.dshc-drawer-handle:hover {
-  background: var(--dsw-alias-button-primary-hover, color-mix(in srgb, var(--dshc-accent) 86%, #000));
-}
-
-.dshc-drawer-handle:active {
-  filter: brightness(0.94);
+.dshc-drawer-handle:hover,
+.dshc-drawer-handle:focus-visible {
+  width: var(--dshc-tab-open);
+  height: var(--dshc-tab-open);
+  border-color: color-mix(in srgb, var(--dsw-alias-label-primary-foreground, #fff) 70%, transparent);
+  border-radius: 9px;
+  background: var(--dsw-alias-button-primary-hover, color-mix(in srgb, var(--dshc-accent) 88%, #fff));
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.24);
 }
 
 .dshc-drawer-handle:focus-visible {
   outline: none;
-  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--dsw-alias-label-primary-foreground, #fff) 85%, transparent);
+}
+
+.dshc-drawer-glyph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0.5);
+  transition:
+    opacity 130ms ease 30ms,
+    transform 170ms var(--dshc-drawer-ease);
+}
+
+.dshc-drawer-handle:hover .dshc-drawer-glyph,
+.dshc-drawer-handle:focus-visible .dshc-drawer-glyph {
+  opacity: 1;
+  transform: scale(1);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -20,10 +20,11 @@ composer "画布" button           →  opens/focuses the same tab
   visible; clicking a label selects its frame.
 - The layer panel and the inspector are drawers: the panel and its pull travel
   together in one container, and clicking the pull slides the whole drawer out or
-  back into the rail. The pull is a bookmark-shaped ribbon in the theme's primary
-  color that hangs over the canvas edge without taking layout space, so a closed
-  drawer costs no canvas width and still shows its bookmark. The rail buttons
-  keep working as before.
+  back into the rail. The pull is a slim theme-colored tab on the inner edge of
+  the drawer's top corner that floats over the canvas without taking layout
+  space; hovering it grows the tab into a rounded, outlined cube with the fold
+  chevron, and a closed drawer costs no canvas width while still showing its
+  tab. The rail buttons keep working as before.
 - Right-click the canvas for a context menu: copy/cut/paste/duplicate/delete,
   insert selection into the chat composer, group/ungroup, z-order, lock/unlock,
   show/hide, create component, fit, select all.
