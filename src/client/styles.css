@@ -469,10 +469,13 @@
   display: flex;
   align-items: stretch;
   position: relative;
-  /* Panel slot geometry is shared with the drawer pulls. */
+  /* Drawer geometry: each slot is a clipped viewport that holds one drawer, and
+     the drawer travels as a whole when it opens or closes. */
   --dshc-rail-w: 44px;
   --dshc-panel-w: 216px;
   --dshc-inspector-w: 236px;
+  --dshc-pull-w: 16px;
+  --dshc-drawer-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 .dshc-rail {
@@ -514,103 +517,119 @@
 }
 
 .dshc-panel-wrap {
-  flex: none;
-  width: var(--dshc-panel-w);
+  flex: 1 1 auto;
   min-width: 0;
   border-right: 1px solid var(--dshc-line);
   background: var(--dshc-raise);
   overflow: auto;
-  z-index: 5;
-  animation: dshc-drawer-in-left 180ms cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
-/* Drawer pulls: attached to the inner edge of a panel slot, so the open panel
-   and the empty slot keep the same visible affordance. */
-.dshc-drawer {
-  position: absolute;
-  top: 6px;
-  z-index: 7;
+/* The slot keeps the panel's footprint only: the pull is pulled out of the
+   layout, so a closed drawer costs no canvas width and an open one costs exactly
+   the panel width. */
+.dshc-drawer-slot {
+  position: relative;
+  flex: none;
+  align-self: stretch;
+  z-index: 5;
+  transition: width 180ms var(--dshc-drawer-ease);
+}
+
+.dshc-drawer-slot-left {
+  width: 0;
+}
+
+.dshc-drawer-slot-left.is-open {
+  width: var(--dshc-panel-w);
+}
+
+.dshc-drawer-slot-right {
+  width: 0;
+}
+
+.dshc-drawer-slot-right.is-open {
+  width: var(--dshc-inspector-w);
+}
+
+/* One drawer: the panel and its pull translate together. */
+.dshc-drawer-pane {
+  display: flex;
+  align-items: stretch;
+  height: 100%;
+}
+
+.dshc-drawer-pane-left {
+  width: var(--dshc-panel-w);
+  transform: translateX(calc(-1 * var(--dshc-panel-w)));
+  transition: transform 180ms var(--dshc-drawer-ease);
+}
+
+.dshc-drawer-slot-left.is-open .dshc-drawer-pane-left {
+  transform: translateX(0);
+}
+
+/* The right slot is anchored to the right edge, so its drawer already overflows
+   off-screen while the slot is narrow; only the pull hangs back over the canvas. */
+.dshc-drawer-pane-right {
+  width: var(--dshc-inspector-w);
+}
+
+/* A closed drawer hides its content once the slide is over, so trimmed controls
+   leave the tab order without waiting on the transition. */
+.dshc-drawer-slot:not(.is-open) .dshc-panel-wrap,
+.dshc-drawer-slot:not(.is-open) .dshc-inspector {
+  visibility: hidden;
+  transition: visibility 0s linear 180ms;
+}
+
+/* The pull rides on the inner edge of the drawer. */
+.dshc-drawer-handle {
+  flex: none;
+  align-self: flex-start;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 16px;
+  width: var(--dshc-pull-w);
   height: 44px;
+  margin-top: 6px;
   padding: 0;
   border: 1px solid var(--dshc-line-strong);
-  border-radius: 9px;
   background: var(--dshc-overlay);
   color: var(--dshc-muted);
-  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.1);
   cursor: pointer;
   transition:
-    left 180ms cubic-bezier(0.22, 0.61, 0.36, 1),
-    right 180ms cubic-bezier(0.22, 0.61, 0.36, 1),
     color 120ms ease,
     background 120ms ease;
 }
 
-.dshc-drawer:hover {
-  color: var(--dshc-accent);
-  background: color-mix(in srgb, var(--dshc-accent) 8%, var(--dshc-overlay));
-}
-
-.dshc-drawer:focus-visible {
-  outline: 2px solid var(--dshc-accent);
-  outline-offset: 1px;
-}
-
-.dshc-drawer-left {
-  left: min(var(--dshc-rail-w), calc(100% - 16px));
+/* Negative margins keep the pull out of the drawer's layout: it hangs over the
+   canvas instead of narrowing it, and stays visible when the drawer is closed. */
+.dshc-drawer-handle.is-left {
+  margin-right: calc(-1 * var(--dshc-pull-w));
   border-left: none;
   border-radius: 0 9px 9px 0;
 }
 
-.dshc-drawer-left.is-open {
-  left: min(calc(var(--dshc-rail-w) + var(--dshc-panel-w)), calc(100% - 16px));
-}
-
-.dshc-drawer-right {
-  right: 0;
+.dshc-drawer-handle.is-right {
+  margin-left: calc(-1 * var(--dshc-pull-w));
   border-right: none;
   border-radius: 9px 0 0 9px;
 }
 
-.dshc-drawer-right.is-open {
-  right: min(var(--dshc-inspector-w), calc(100% - 16px));
+.dshc-drawer-handle:hover {
+  color: var(--dshc-accent);
+  background: color-mix(in srgb, var(--dshc-accent) 8%, var(--dshc-overlay));
 }
 
-@keyframes dshc-drawer-in-left {
-  from {
-    opacity: 0.4;
-    transform: translateX(-10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes dshc-drawer-in-right {
-  from {
-    opacity: 0.4;
-    transform: translateX(10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+.dshc-drawer-handle:focus-visible {
+  outline: 2px solid var(--dshc-accent);
+  outline-offset: -2px;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .dshc-drawer {
+  .dshc-drawer-slot,
+  .dshc-drawer-pane-left {
     transition: none;
-  }
-
-  .dshc-panel-wrap,
-  .dshc-inspector {
-    animation: none;
   }
 }
 
@@ -780,13 +799,11 @@
 
 /* inspector */
 .dshc-inspector {
-  flex: none;
-  width: var(--dshc-inspector-w);
+  flex: 1 1 auto;
+  min-width: 0;
   border-left: 1px solid var(--dshc-line);
   background: var(--dshc-raise);
   overflow: auto;
-  z-index: 5;
-  animation: dshc-drawer-in-right 180ms cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 .dshc-inspector-head {
