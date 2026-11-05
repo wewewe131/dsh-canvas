@@ -584,33 +584,23 @@
   transition: visibility 0s linear 180ms;
 }
 
-/* The pull is a flush tab at the top corner of the drawer's inner edge. It is
-   absolutely positioned, so the drawer geometry never depends on it: a small
-   strip hangs over the canvas, and hovering grows it into a full rounded cube
-   with the glyph, border and shadow. The glyph only shows in the cube. */
+/* A plain bar on the drawer's top inner edge: it marks where the panel folds,
+   with no glyph and no hover growth. It is absolutely positioned, so it floats
+   over the canvas and never changes the drawer geometry. */
 .dshc-root .dshc-drawer-handle {
   position: absolute;
   top: 6px;
   z-index: 6;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   width: var(--dshc-tab-w);
   height: var(--dshc-tab-h);
   padding: 0;
-  border: 1px solid transparent;
-  /* One radius for both states: only the horizontal axis grows, so the corners
-     keep the same angle instead of morphing with the shape. */
-  border-radius: 6px;
-  background: var(--dsw-alias-button-primary-fill, var(--dshc-accent));
-  color: var(--dsw-alias-label-primary-foreground, #fff);
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.18);
-  overflow: hidden;
+  border: 1px solid var(--dshc-line-strong);
+  border-radius: 3px;
+  background: var(--dshc-raise, #fff);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
   cursor: pointer;
   transition:
-    width 170ms var(--dshc-drawer-ease),
-    border-color 170ms var(--dshc-drawer-ease),
-    box-shadow 170ms var(--dshc-drawer-ease),
+    border-color 120ms ease,
     background 120ms ease;
 }
 
@@ -622,33 +612,14 @@
   right: 100%;
 }
 
-.dshc-drawer-handle:hover,
-.dshc-drawer-handle:focus-visible {
-  width: var(--dshc-tab-h);
-  border-color: color-mix(in srgb, var(--dsw-alias-label-primary-foreground, #fff) 70%, transparent);
-  background: var(--dsw-alias-button-primary-hover, color-mix(in srgb, var(--dshc-accent) 88%, #fff));
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.24);
+.dshc-drawer-handle:hover {
+  border-color: color-mix(in srgb, var(--dshc-accent) 55%, var(--dshc-line-strong));
+  background: var(--dshc-overlay);
 }
 
 .dshc-drawer-handle:focus-visible {
-  outline: none;
-}
-
-.dshc-drawer-glyph {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transform: scale(0.5);
-  transition:
-    opacity 130ms ease 30ms,
-    transform 170ms var(--dshc-drawer-ease);
-}
-
-.dshc-drawer-handle:hover .dshc-drawer-glyph,
-.dshc-drawer-handle:focus-visible .dshc-drawer-glyph {
-  opacity: 1;
-  transform: scale(1);
+  outline: 2px solid var(--dshc-accent);
+  outline-offset: 1px;
 }
 
 @media (prefers-reduced-motion: reduce) {
