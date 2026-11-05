@@ -476,7 +476,6 @@
   --dshc-inspector-w: 236px;
   --dshc-tab-w: 6px;
   --dshc-tab-h: 26px;
-  --dshc-tab-open: 30px;
   --dshc-drawer-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
@@ -600,7 +599,9 @@
   height: var(--dshc-tab-h);
   padding: 0;
   border: 1px solid transparent;
-  border-radius: 3px;
+  /* One radius for both states: only the horizontal axis grows, so the corners
+     keep the same angle instead of morphing with the shape. */
+  border-radius: 6px;
   background: var(--dsw-alias-button-primary-fill, var(--dshc-accent));
   color: var(--dsw-alias-label-primary-foreground, #fff);
   box-shadow: 0 1px 3px rgba(15, 23, 42, 0.18);
@@ -608,8 +609,6 @@
   cursor: pointer;
   transition:
     width 170ms var(--dshc-drawer-ease),
-    height 170ms var(--dshc-drawer-ease),
-    border-radius 170ms var(--dshc-drawer-ease),
     border-color 170ms var(--dshc-drawer-ease),
     box-shadow 170ms var(--dshc-drawer-ease),
     background 120ms ease;
@@ -625,10 +624,8 @@
 
 .dshc-drawer-handle:hover,
 .dshc-drawer-handle:focus-visible {
-  width: var(--dshc-tab-open);
-  height: var(--dshc-tab-open);
+  width: var(--dshc-tab-h);
   border-color: color-mix(in srgb, var(--dsw-alias-label-primary-foreground, #fff) 70%, transparent);
-  border-radius: 9px;
   background: var(--dsw-alias-button-primary-hover, color-mix(in srgb, var(--dshc-accent) 88%, #fff));
   box-shadow: 0 4px 12px rgba(15, 23, 42, 0.24);
 }

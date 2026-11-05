@@ -22,9 +22,10 @@ composer "画布" button           →  opens/focuses the same tab
   together in one container, and clicking the pull slides the whole drawer out or
   back into the rail. The pull is a slim theme-colored tab on the inner edge of
   the drawer's top corner that floats over the canvas without taking layout
-  space; hovering it grows the tab into a rounded, outlined cube with the fold
-  chevron, and a closed drawer costs no canvas width while still showing its
-  tab. The rail buttons keep working as before.
+  space; hovering it widens the tab into a rounded, outlined cube with the fold
+  chevron (only the width animates, the corner radius stays fixed), and a closed
+  drawer costs no canvas width while still showing its tab. The rail buttons
+  keep working as before.
 - Right-click the canvas for a context menu: copy/cut/paste/duplicate/delete,
   insert selection into the chat composer, group/ungroup, z-order, lock/unlock,
   show/hide, create component, fit, select all.
