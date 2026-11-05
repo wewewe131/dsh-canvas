@@ -474,7 +474,7 @@
   --dshc-rail-w: 44px;
   --dshc-panel-w: 216px;
   --dshc-inspector-w: 236px;
-  --dshc-pull-w: 16px;
+  --dshc-pull-w: 18px;
   --dshc-drawer-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
@@ -583,52 +583,56 @@
 }
 
 /* The pull rides on the inner edge of the drawer. */
-.dshc-drawer-handle {
+/* A bookmark ribbon: theme brand fill, white glyph and a V notch at the bottom,
+   so the shape reads as a tab pinned to the panel edge. The root qualifier keeps
+   the theme foreground ahead of the generic `button { color: inherit }` reset. */
+.dshc-root .dshc-drawer-handle {
   flex: none;
   align-self: flex-start;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   width: var(--dshc-pull-w);
-  height: 44px;
+  height: 54px;
   margin-top: 6px;
-  padding: 0;
-  border: 1px solid var(--dshc-line-strong);
-  background: var(--dshc-overlay);
-  color: var(--dshc-muted);
+  padding: 7px 0 0;
+  border: none;
+  background: var(--dsw-alias-button-primary-fill, var(--dshc-accent));
+  color: var(--dsw-alias-label-primary-foreground, #fff);
   cursor: pointer;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%);
   transition:
-    color 120ms ease,
-    background 120ms ease;
+    background 120ms ease,
+    filter 120ms ease;
 }
 
 /* Negative margins keep the pull out of the drawer's layout: it hangs over the
    canvas instead of narrowing it, and stays visible when the drawer is closed. */
 .dshc-drawer-handle.is-left {
   margin-right: calc(-1 * var(--dshc-pull-w));
-  border-left: none;
-  border-radius: 0 9px 9px 0;
 }
 
 .dshc-drawer-handle.is-right {
   margin-left: calc(-1 * var(--dshc-pull-w));
-  border-right: none;
-  border-radius: 9px 0 0 9px;
 }
 
 .dshc-drawer-handle:hover {
-  color: var(--dshc-accent);
-  background: color-mix(in srgb, var(--dshc-accent) 8%, var(--dshc-overlay));
+  background: var(--dsw-alias-button-primary-hover, color-mix(in srgb, var(--dshc-accent) 86%, #000));
+}
+
+.dshc-drawer-handle:active {
+  filter: brightness(0.94);
 }
 
 .dshc-drawer-handle:focus-visible {
-  outline: 2px solid var(--dshc-accent);
-  outline-offset: -2px;
+  outline: none;
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--dsw-alias-label-primary-foreground, #fff) 85%, transparent);
 }
 
 @media (prefers-reduced-motion: reduce) {
   .dshc-drawer-slot,
-  .dshc-drawer-pane-left {
+  .dshc-drawer-pane-left,
+  .dshc-root .dshc-drawer-handle {
     transition: none;
   }
 }
